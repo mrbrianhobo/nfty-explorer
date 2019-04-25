@@ -146,7 +146,8 @@ class App extends Component {
 
   renderCards() {
     const { currPage, address, page } = this.state;
-    let key = address + "?page=" + page;
+    // unique id for address + page
+    let id = address + "?page=" + page;
     let assets = currPage.map(asset => <Card key={asset.assetContract + " #" + asset.id} asset={asset} />);
     let animeProps = {
       opacity: [0,1],
@@ -156,7 +157,7 @@ class App extends Component {
     };
 
     return (
-      <Anime {...animeProps} key={key}>
+      <Anime {...animeProps} key={id}>
         {assets.map((card, i) => <div key={i}>{card}</div>)}
       </Anime>
     );
@@ -175,8 +176,19 @@ class App extends Component {
     );
   }
 
+  renderSearchBar() {
+    const { isHome, web3 } = this.state;
+    return (
+      <SearchBar 
+        isHome={isHome} 
+        web3={web3} 
+        onSearch={this.handleSearch}
+      />
+    );
+  }
+
   renderPagination() {
-    const { nextPage, isLoading } = this.state;
+    const { page, nextPage, isLoading } = this.state;
     let hasNextPage = nextPage !== null;
     return (
       <div>
@@ -184,7 +196,7 @@ class App extends Component {
           null
         ) : (
           <Pagination 
-            pageNum={this.state.page} 
+            pageNum={page} 
             hasNextPage={hasNextPage} 
             onNextPage={this.handleNext} 
             onPrevPage={this.handlePrev} 
@@ -195,14 +207,14 @@ class App extends Component {
   }
 
   render() {
-    const { isHome, web3 } = this.state;
+    const { isHome } = this.state;
     return (
       <div className="flex-wrapper">
         <div className="container">
           <header>
             <h1 className="heading">nfty.fun</h1>
           </header>
-          <SearchBar isHome={isHome} web3={web3} onSearch={this.handleSearch}/>
+          {this.renderSearchBar()}
           {this.renderLoading()} 
           {isHome ? (
           	  null
